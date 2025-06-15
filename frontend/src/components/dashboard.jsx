@@ -19,7 +19,7 @@ import { styled } from "@mui/system";
 import "../styles/Dashboard.css";
 import { Home } from "lucide-react";
 
-// Custom styled components
+
 const StyledButton = styled(MuiButton)({
   textTransform: 'none',
   fontWeight: 600,
@@ -52,7 +52,7 @@ const Dashboard = () => {
   const [flightToDelete, setFlightToDelete] = useState(null);
   const navigate = useNavigate();
 
-  // MUI Theme
+  
   const theme = createTheme({
     palette: {
       primary: {
@@ -70,7 +70,7 @@ const Dashboard = () => {
     },
   });
 
-  // Fetch flights
+  
   const fetchFlights = async () => {
     setIsLoading(true);
     try {
@@ -90,7 +90,7 @@ const Dashboard = () => {
     fetchFlights();
   }, []);
 
-  // Form handlers
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -140,7 +140,7 @@ const Dashboard = () => {
     }
   };
 
-  // Flight operations
+  
   const handleEdit = (flight) => {
     setFormData({
       departure: flight.departure,
@@ -188,7 +188,7 @@ const Dashboard = () => {
     setEditingId(null);
   };
 
-  // DataGrid columns
+ 
   const columns = [
     { field: 'departure', headerName: 'Departure', flex: 1 },
     { field: 'destination', headerName: 'Destination', flex: 1 },

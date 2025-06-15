@@ -37,15 +37,13 @@ const RebookFlight = () => {
     fetchAvailableFlights();
   }, []);
 
-  // Gérer les changements du formulaire
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Trouver le vol sélectionné
   const selectedFlight = flights.find((f) => f._id === selectedFlightId);
 
-  // Soumettre la réservation
   const handleBooking = async (e) => {
     e.preventDefault();
 
@@ -73,9 +71,9 @@ const RebookFlight = () => {
 
       const result = await response.json();
       if (result.success) {
-        generateTicketPDF(selectedFlight, formData, result.bookingId); // Génère le PDF
+        generateTicketPDF(selectedFlight, formData, result.bookingId); 
         setBookingSuccess(true);
-        setTimeout(() => navigate("/"), 4000); // Redirige après 4s
+        setTimeout(() => navigate("/"), 4000); 
       }
     } catch (error) {
       console.error("Error booking flight:", error);
@@ -83,7 +81,7 @@ const RebookFlight = () => {
     }
   };
 
-  // Fonction pour générer le PDF
+
   const generateTicketPDF = (flight, user, bookingId) => {
     const doc = new jsPDF();
 
@@ -101,12 +99,12 @@ const RebookFlight = () => {
     doc.text(`Price: $${flight.price}`, 20, 110);
 
     doc.setDrawColor(0);
-    doc.line(20, 120, 190, 120); // Ligne de séparation
+    doc.line(20, 120, 190, 120); 
 
     doc.setFont("courier", "bold");
     doc.text("Have a great trip!", 20, 135);
 
-    // Télécharger le PDF automatiquement
+    
     doc.save(`BoardingPass-${bookingId}.pdf`);
   };
 

@@ -7,7 +7,6 @@ const Search = ({ setResults }) => {
   const destinationRef = useRef();
   const departDateRef = useRef();
  
-  // You can later replace this with dynamic city data from an API
   const cities = ["New York", "London", "Paris", "Tokyo", "Dubai", "Sydney"];
    useEffect(()=> {
      document.title='search';
