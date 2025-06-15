@@ -1,17 +1,11 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { jsPDF } from "jspdf";
-import { toast } from "react-hot-toast";
-import Input from "../common/Input";
-import Button from "../common/Button";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaPhone, FaCalendarAlt, FaVenusMars, FaCreditCard, FaLock } from "react-icons/fa";
+import toast from "react-hot-toast";
 import "../../styles/BookFlight.css";
 
 const BookFlight = () => {
-  const [flights, setFlights] = useState([]);
-  const [selectedFlightId, setSelectedFlightId] = useState("");
-  const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const [step, setStep] = useState(1); // 1: Passenger Info, 2: Payment, 3: Success
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,28 +22,10 @@ const BookFlight = () => {
   });
   const [errors, setErrors] = useState({});
 
-  const navigate = useNavigate();
-
   useEffect(() => {
-    document.title = 'Book Flight';
-    fetchAvailableFlights();
+    // Set document title
+    document.title = "Book Flight - EasyFlight";
   }, []);
-
-  const fetchAvailableFlights = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("http://localhost:5000/api/flights");
-      if (!response.ok) throw new Error("Failed to fetch flights");
-
-      const data = await response.json();
-      if (data.success) setFlights(data.data);
-    } catch (error) {
-      toast.error("Could not load flights. Please try again later.");
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -125,112 +101,13 @@ const BookFlight = () => {
         setTimeout(() => {
           setStep(3);
           toast.success("Payment successful! Check your email for your e-ticket.", {
+            duration: 5000,
             position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
           });
         }, 1500);
       }
     }
   };
-
-  const selectedFlight = flights.find((f) => f._id === selectedFlightId);
-
-  const handleBooking = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        `http://localhost:5000/api/flights/book/${selectedFlightId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Booking failed");
-      }
-
-      if (data.success) {
-        generateTicketPDF(selectedFlight, formData, data.bookingId);
-        setBookingSuccess(true);
-        toast.success("Flight booked successfully!");
-        setTimeout(() => navigate("/"), 4000);
-      }
-    } catch (error) {
-      toast.error(error.message || "Something went wrong!");
-      console.error("Error booking flight:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const generateTicketPDF = (flight, user, bookingId) => {
-    try {
-      const doc = new jsPDF();
-
-      // Add airline logo or header
-      doc.setFontSize(24);
-      doc.setTextColor(82, 233, 160); // Brand color
-      doc.text("EasyFlight", 20, 20);
-
-      // Add boarding pass title
-      doc.setFontSize(20);
-      doc.setTextColor(0);
-      doc.text("✈️ Boarding Pass", 20, 35);
-
-      // Add passenger information
-      doc.setFontSize(12);
-      doc.text("Passenger Information", 20, 50);
-      doc.text(`Name: ${user.firstName} ${user.lastName}`, 20, 60);
-      doc.text(`Email: ${user.email}`, 20, 70);
-      doc.text(`Booking ID: ${bookingId}`, 20, 80);
-
-      // Add flight information
-      doc.text("Flight Details", 20, 100);
-      doc.text(`Route: ${flight.departure} → ${flight.destination}`, 20, 110);
-      doc.text(`Date: ${new Date(flight.date).toLocaleDateString()}`, 20, 120);
-      doc.text(`Time: ${flight.time}`, 20, 130);
-      doc.text(`Price: $${flight.price}`, 20, 140);
-
-      // Add a decorative line
-      doc.setDrawColor(82, 233, 160);
-      doc.line(20, 150, 190, 150);
-
-      // Add a message
-      doc.setFont("helvetica", "bold");
-      doc.text("Have a great trip!", 20, 165);
-
-      // Save the PDF
-      doc.save(`BoardingPass-${bookingId}.pdf`);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      toast.error("Failed to generate boarding pass. Please try again.");
-    }
-  };
-
-  if (isLoading && !flights.length) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading available flights...</p>
-      </div>
-    );
-  }
 
   const renderPassengerForm = () => (
     <div className="booking-form">
@@ -427,7 +304,7 @@ const BookFlight = () => {
       <div className="success-content">
         <h2>Booking Confirmed!</h2>
         <p>Thank you for choosing EasyFlight for your travel needs.</p>
-        <p>We've sent your e-ticket to your email address.</p>
+        <p>We&apos;ve sent your e-ticket to your email address.</p>
         <p>Please check your inbox for the confirmation email.</p>
         <button 
           className="submit-button"

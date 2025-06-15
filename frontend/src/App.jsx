@@ -19,6 +19,8 @@ import CarOffers from "./components/car-rental/CarOffers";
 import Hotels from "./components/hotels/Hotels";
 import "./App.css";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [results, setResults] = useState([]);
@@ -72,6 +74,17 @@ const App = () => {
           </main>
           <Footer />
           <link rel="icon" href="%PUBLIC_URL%/logo3.png" type="image/png" />
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </div>
         <Toaster
           position="top-right"
